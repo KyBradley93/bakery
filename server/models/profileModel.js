@@ -75,7 +75,7 @@ const addReward = async (customer_id, reward) => {
     }
 };
 
-modeule.exports = {
+module.exports = {
     getEvents,
     getProfileRewards,
     getCustomersEvents,
