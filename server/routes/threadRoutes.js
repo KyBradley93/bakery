@@ -3,9 +3,9 @@ const router = express.Router();
 const ThreadController = require('../controllers/threadController');
 
 router.get('/', ThreadController.getThreads);
-router.get('/:comments', ThreadController.getThreadComments);
-router.post('/', ThreadController.addThread);
-router.post('/:comment', ThreadController.postThreadComment)
+router.get('/thread-comments', ThreadController.getThreadComments);
+router.post('/thread', ThreadController.addThread);
+router.post('/thread-comment', ThreadController.postThreadComment)
 
 
 module.exports = router;
