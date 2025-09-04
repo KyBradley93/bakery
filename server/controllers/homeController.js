@@ -41,13 +41,3 @@ module.exports = {
     getThreads
 };
 
-/*
-const = async (req, res) => {
- try {
-    res.json();
- } catch (err) {
-    console.error('error in homeController', err);
-    res.status(500).json({ message: 'homeController error'});
- }
-};
- */

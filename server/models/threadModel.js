@@ -18,7 +18,7 @@ const getThreadComments = async (thread_id) => {
     }
 };
 
-const postThreadComments = async (thread_id, customer_id, date, content) => {
+const postThreadComment = async (thread_id, customer_id, date, content) => {
   try {
     const insertQuery = `
       INSERT INTO thread_comments (thread_id, customer_id, date, content)
@@ -61,6 +61,6 @@ const addThread = async (customer_id, title, content, date) => {
 module.exports = {
   getThreads,
   getThreadComments,
-  postThreadComments,
+  postThreadComment,
   addThread
 };

@@ -22,7 +22,7 @@ const getThreadComments = async (req, res) => {
     }
 };
 
-const postThreadComments = async (req, res) => {
+const postThreadComment = async (req, res) => {
     const { thread_id, customer_id, date, content } = req.body;
 
     try {
@@ -49,7 +49,7 @@ const addThread = async (req, res) => {
 module.exports = {
   getThreads,
   getThreadComments,
-  postThreadComments,
+  postThreadComment,
   addThread
 };
 

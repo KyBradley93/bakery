@@ -10,7 +10,7 @@ const getProducts = async (req, res) => {
     }
 };
 
-const getProductByType = async (req, res) => {
+const getProductsByType = async (req, res) => {
     const { product_type_id } = req.body;
     try {
         const product = await OrderModel.getProductByType({ product_type_id });
@@ -91,11 +91,11 @@ const getCustomProductOrderAddOns = async (req, res) => {
     }
 };
 
-const addProductsToCart = async (req, res) => {
+const addProductToCart = async (req, res) => {
     const { customer_id, product_id, quantity } = req.body;
 
     try {
-        await OrderModel.addProductsToCart({ customer_id, product_id, quantity });
+        await OrderModel.addProductToCart({ customer_id, product_id, quantity });
         res.status(200).json({ message: 'Added Item' });
     } catch (err) {
         console.error('error in orderController', err);
@@ -103,11 +103,11 @@ const addProductsToCart = async (req, res) => {
     }
 };
 
-const addCustomProductsToCart = async (req, res) => {
+const addCustomProductToCart = async (req, res) => {
     const { customer_id, custom_product_id, quantity } = req.body;
 
     try {
-        await OrderModel.addCustomProductsToCart({ customer_id, custom_product_id, quantity });
+        await OrderModel.addCustomProductToCart({ customer_id, custom_product_id, quantity });
         res.status(200).json({ message: 'Added Item' });
     } catch (err) {
         console.error('error in orderController', err);
@@ -117,7 +117,7 @@ const addCustomProductsToCart = async (req, res) => {
 
 module.exports = {
 getProducts,
-getProductByType,
+getProductsByType,
 getProductTypes,
 getCustomProductSizes,
 getCustomProductBases,
@@ -125,6 +125,6 @@ getCustomProductVariants,
 getCustomProductAddOns,
 getCustomProducts,
 getCustomProductOrderAddOns,
-addProductsToCart,
-addCustomProductsToCart
+addProductToCart,
+addCustomProductToCart
 };

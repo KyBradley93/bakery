@@ -18,7 +18,7 @@ const getProfileRewards = async (customer_id) => {
     }
 };
 
-const getCustomersEvents = async (customer_id) => {
+const getProfileEvents = async (customer_id) => {
     try {
         const res = await pool.query(
             'SELECT e.* FROM events_attendees ea JOIN events e ON ea.event_id = e.id WHERE ea.customer_id = $1', 
@@ -78,7 +78,7 @@ const addReward = async (customer_id, reward) => {
 module.exports = {
     getEvents,
     getProfileRewards,
-    getCustomersEvents,
+    getProfileEvents,
     getProfilePoints,
     useReward,
     postContest,

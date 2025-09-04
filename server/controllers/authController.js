@@ -35,12 +35,12 @@ const register = async (req, res) => {
     const { name, password } = req.body;
 
     try {
-        const nameCheck = AuthModel.getCustomerName({ name });
+        const nameCheck = await AuthModel.getCustomerName({ name });
         if (nameCheck.rows.length > 0) return res.status(400).json({ error: 'Name already exists' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        AuthModel.register({ name, hashedPassword });
+        await AuthModel.register({ name, hashedPassword });
 
         res.status(201).json({ message: 'Registered successfully' });
     } catch (err) {
@@ -58,10 +58,10 @@ const googleLogin = async (req, res) => {
             audience: process.env.GOOGLE_CLIENT_ID,
         });
 
-        const payload = ticket.getPayload();
+        const payload = await ticket.getPayload();
         const { sub: googleId, email, name } = payload;
 
-        let user = AuthModel.getCustomerByGoogleId(googleId);
+        let user = await AuthModel.getCustomerByGoogleId(googleId);
 
         if (user.rows.length === 0) {
             await AuthModel.googleRegister({ name, email, googleId });

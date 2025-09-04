@@ -22,7 +22,7 @@ const getProfileRewards = async (req, res) => {
     };
 };
 
-const getCustomersEvents = async (req, res) => {
+const getProfileEvents = async (req, res) => {
     const { customer_id } = req.body;
 
     try {
@@ -97,23 +97,10 @@ const addReward = async (req, res) => {
 module.exports = {
     getEvents,
     getProfileRewards,
-    getCustomersEvents,
+    getProfileEvents,
     getProfilePoints,
     useReward,
     postContest,
     rsvp,
     addReward
 };
-
-
-
-/*
-const = async (req, res) => {
-    try {
-        res.json();
-    } catch (err) {
-        console.error('error in authController', err);
-        res.status(500).json({ message: 'authController error'});
-    }
-};
- */

@@ -9,7 +9,7 @@ const getProducts = async () => {
     }
 };
 
-const getProductByType = async (product_type_id) => {
+const getProductsByType = async (product_type_id) => {
     try {
         const res = await pool.query('SELECT * FROM products WHERE product_type_id = $1', [product_type_id]);
         return res.rows;
@@ -81,7 +81,7 @@ const getCustomProductOrderAddOns = async () => {
     }
 };
 
-const addProductsToCart = async (customer_id, product_id, quantity) => {
+const addProductToCart = async (customer_id, product_id, quantity) => {
     try {
         // Ensure users cart exists
         let cartResult = await pool.query('SELECT * FROM cart WHERE customer_id = $1', [customer_id]);
@@ -106,7 +106,7 @@ const addProductsToCart = async (customer_id, product_id, quantity) => {
     }
 };
 
-const addCustomProductsToCart = async (customer_id, custom_product_id, quantity) => {
+const addCustomProductToCart = async (customer_id, custom_product_id, quantity) => {
     try {
         // Ensure users cart exists
         let cartResult = await pool.query('SELECT * FROM cart WHERE customer_id = $1', [customer_id]);
@@ -134,7 +134,7 @@ const addCustomProductsToCart = async (customer_id, custom_product_id, quantity)
 
 module.exports = {
 getProducts,
-getProductByType,
+getProductsByType,
 getProductTypes,
 getCustomProductSizes,
 getCustomProductBases,
@@ -142,6 +142,6 @@ getCustomProductVariants,
 getCustomProductAddOns,
 getCustomProducts,
 getCustomProductOrderAddOns,
-addProductsToCart,
-addCustomProductsToCart
+addProductToCart,
+addCustomProductToCart
 };
