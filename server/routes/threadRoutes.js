@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ThreadController = require('../controllers/threadController');
-const AuthenticateCustomer = require('../middleware/auth')
+const AuthenticateCustomer = require('../middleware/auth');
 
 router.get('/', AuthenticateCustomer, ThreadController.getThreads);
 router.get('/thread-comments', AuthenticateCustomer, ThreadController.getThreadComments);

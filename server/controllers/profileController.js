@@ -3,7 +3,7 @@ const ProfileModel = require('../models/profileModel');
 const getEvents = async (req, res) => {
     try {
         const events = await ProfileModel.getEvents();
-        res.json(events);
+        res.status(200).json(events);
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -11,11 +11,15 @@ const getEvents = async (req, res) => {
 };
 
 const getProfileRewards = async (req, res) => {
-    const { customer_id } = req.body;
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const rewards = ProfileModel.getProfileRewards({ customer_id });
-        res.json(rewards);
+        const rewards = await ProfileModel.getProfileRewards({ customer_id });
+        res.status(200).json(rewards);
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -23,11 +27,15 @@ const getProfileRewards = async (req, res) => {
 };
 
 const getProfileEvents = async (req, res) => {
-    const { customer_id } = req.body;
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const events = ProfileModel.getCustomersEvents({ customer_id });
-        res.json(events);
+        const events = await ProfileModel.getProfileEvents({ customer_id });
+        res.status(200).json(events);
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -35,11 +43,15 @@ const getProfileEvents = async (req, res) => {
 };
 
 const getProfilePoints = async (req, res) => {
-    const { customer_id } = req.body;
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const points = ProfileModel.getProfilePoints({ customer_id });
-        res.json(points);
+        const points = await ProfileModel.getProfilePoints({ customer_id });
+        res.status(200).json(points);
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -47,11 +59,17 @@ const getProfilePoints = async (req, res) => {
 };
 
 const useReward = async (req, res) => {
-    const { reward, customer_id } = req.body;
+    const { reward } = req.body;
+
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const usedReward = await ProfileModel.useReward({ reward, customer_id });
-        res.status.json({ message: `Used Reward: ${usedReward}`});
+        await ProfileModel.useReward({ reward, customer_id });
+        res.status(200).json({ message: `Used Reward: ${reward}`});
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -59,11 +77,17 @@ const useReward = async (req, res) => {
 };
 
 const postContest = async (req, res) => {
-    const { customer_id, product_type_id, name, base, variant, add_ons, story } = req.body;
+    const { product_type_id, name, base, variant, add_ons, story } = req.body;
+
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const post = await ProfileModel.postContest({ customer_id, product_type_id, name, base, variant, add_ons, story });
-        res.status(200).json({ message: `Posted Recipe For Contest: ${post.name}`});
+        await ProfileModel.postContest({ customer_id, product_type_id, name, base, variant, add_ons, story });
+        res.status(200).json({ message: `Posted Recipe For Contest: ${name}`});
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -71,11 +95,17 @@ const postContest = async (req, res) => {
 };
 
 const rsvp = async (req, res) => {
-    const { event_id, customer_id } = req.body;
+    const { event_id } = req.body;
+
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const reservedEvent = await ProfileModel.rsvp({ event_id, customer_id });
-        res.status(200).json({ message: `Reserved a space for: ${reservedEvent}`});
+        await ProfileModel.rsvp({ event_id, customer_id });
+        res.status(200).json({ message: `Reserved a space for you!`});
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
@@ -83,16 +113,26 @@ const rsvp = async (req, res) => {
 };
 
 const addReward = async (req, res) => {
-    const { customer_id, reward } = req.body;
+    const { reward } = req.body;
+
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    };
 
     try {
-        const newReward = await ProfileModel.addReward({ customer_id, reward });
-        res.status(200).json({ message: `Added Reward: ${newReward}`});
+        await ProfileModel.addReward({ customer_id, reward });
+        res.status(200).json({ message: `Added Reward` });
     } catch (err) {
         console.error('error in profileController', err);
         res.status(500).json({ message: 'profileController error'});
     }
 };
+
+//npx jest --onlyFailures
+
+
 
 module.exports = {
     getEvents,

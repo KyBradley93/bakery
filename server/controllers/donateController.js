@@ -4,8 +4,8 @@ const sponsorRequest = async (req, res) => {
     const { name, number, email, business } = req.body;
 
     try {
-        const form = DonateModel.sponsorRequest({ name, number, email, business });
-        res.status(200).json(`Made sponsor request for: ${form.business}`);
+        await DonateModel.sponsorRequest({ name, number, email, business });
+        res.status(200).json({ message: `Made sponsor request for: ${business}` });
     } catch (err) {
         console.error('error in donateController', err);
         res.status(500).json({ message: 'donateController error'});
@@ -16,8 +16,8 @@ const volunteerRequest = async (req, res) => {
     const { name, number, email } = req.body;
 
     try {
-        const form = DonateModel.volunteerRequest({ name, number, email });
-        res.status(200).json(`Made volunteer request for: ${ form.name }`);
+        await DonateModel.volunteerRequest({ name, number, email });
+        res.status(200).json({ message: `Made volunteer request for: ${ name }` });
     } catch (err) {
         console.error('error in donateController', err);
         res.status(500).json({ message: 'donateController error'});
@@ -27,7 +27,7 @@ const volunteerRequest = async (req, res) => {
 const getSponsors = async (req, res) => {
     try {
         const sponsors = await DonateModel.getSponsors();
-        res.json(sponsors);
+        res.status(200).json(sponsors);
     } catch (err) {
         console.error('error in donateController', err);
         res.status(500).json({ message: 'donateController error'});

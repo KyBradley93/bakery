@@ -8,7 +8,9 @@ const login = async (req, res) => {
     const { name, password } = req.body;
     try {
 
-        const customer = AuthModel.getCustomer({ name, password });
+        const result = await AuthModel.getCustomer({ name, password });
+        const customer = result?.rows?.[0];
+
         if (!customer) {
             return res.status(404).json({ error: 'User not found' });
         };
@@ -24,7 +26,7 @@ const login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.json({ message: 'Login successful', token });
+        res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
         console.error('error in authController', err);
         res.status(500).json({ message: 'authController error'});
@@ -40,7 +42,9 @@ const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await AuthModel.register({ name, hashedPassword });
+        AuthModel.getCustomerName.mockResolvedValue({ rows: [] });
+
+        await AuthModel.register( name, hashedPassword );
 
         res.status(201).json({ message: 'Registered successfully' });
     } catch (err) {
@@ -49,11 +53,11 @@ const register = async (req, res) => {
     }
 };
 
-const googleLogin = async (req, res) => {
+const googleLogin = async (req, res, injectedClient = client) => {
     const { token } = req.body;
 
     try {
-        const ticket = await client.verifyIdToken({
+        const ticket = await injectedClient.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID,
         });

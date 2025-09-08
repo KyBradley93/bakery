@@ -3,12 +3,12 @@ const HomeModel = require('../models/homeModel');
 const getContestWinner = async (req, res) => {
  try {
     const contestProducts = await HomeModel.getContest();
-    const contestNum = contestProducts.length();
-    const randomNum = Math.floor(Math.random(contestNum));
+    const contestNum = contestProducts.length;
+    const randomNum = Math.floor(Math.random() * contestNum);
 
     const contestWinner = contestProducts[randomNum];
 
-    res.json(contestWinner);
+    res.status(200).json(contestWinner);
  } catch (err) {
     console.error('error in homeController', err);
     res.status(500).json({ message: 'homeController error'});
@@ -18,7 +18,7 @@ const getContestWinner = async (req, res) => {
 const getPhotos = async (req, res) => {
  try {
     const photos = await HomeModel.getPhotos();
-    res.json(photos);
+    res.status(200).json(photos);
  } catch (err) {
     console.error('error in homeController', err);
     res.status(500).json({ message: 'homeController error'});
@@ -28,7 +28,7 @@ const getPhotos = async (req, res) => {
 const getThreads = async (req, res) => {
  try {
     const threads = await HomeModel.getThreads();
-    res.json(threads);
+    res.status(200).json(threads);
  } catch (err) {
     console.error('error in homeController', err);
     res.status(500).json({ message: 'homeController error'});

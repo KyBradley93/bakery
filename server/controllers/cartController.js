@@ -2,8 +2,14 @@ const CartModel = require('../models/cartModel');
 
 const getCart = async (req, res) => {
     try {
-        const cart = CartModel.getCart()
-        res.json(cart);
+        const customer_id = req.customer?.id;
+
+        if (!customer_id) {
+            return res.status(400).json({ message: 'Missing customer ID' });
+        }
+
+        const cart = await CartModel.getCart(customer_id)
+        res.status(200).json(cart);
     } catch (err) {
         console.error('error in cartController', err);
         res.status(500).json({ message: 'cartController error'});
@@ -11,11 +17,20 @@ const getCart = async (req, res) => {
 };
 
 const deleteProductFromCart = async (req, res) => {
-    const { customer_id, product_id } = req.body;
+    const { product_id } = req.body;
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    }
+
+    if (!product_id) {
+        return res.status(400).json({ message: 'Product ID is required' });
+    }
 
     try {
-        const itemToDelete = await CartModel.deleteProductFromCart({ customer_id, product_id });
-        res.status(200).json(`Deleted: ${itemToDelete}`);
+        await CartModel.deleteProductFromCart({ customer_id, product_id });
+        res.status(200).json({ message: `Deleted product ${product_id} from cart` });
     } catch (err) {
         console.error('error in cartController', err);
         res.status(500).json({ message: 'cartController error'});
@@ -23,11 +38,20 @@ const deleteProductFromCart = async (req, res) => {
 };
 
 const deleteCustomProductFromCart = async (req, res) => {
-    const { customer_id, custom_product_id } = req.body;
+    const { custom_product_id } = req.body;
+    const customer_id = req.customer?.id;
+
+    if (!customer_id) {
+        return res.status(400).json({ message: 'Missing customer ID' });
+    }
+
+    if (!custom_product_id) {
+        return res.status(400).json({ message: 'Product ID is required' });
+    }
 
     try {
-        const itemToDelete = await CartModel.deleteCustomProductFromCart({ customer_id, custom_product_id });
-        res.status(200).json(`Deleted: ${itemToDelete}`);
+        await CartModel.deleteCustomProductFromCart({ customer_id, custom_product_id });
+        res.status(200).json({ message: `Deleted custom product ${custom_product_id} from cart` });
     } catch (err) {
         console.error('error in cartController', err);
         res.status(500).json({ message: 'cartController error'});
@@ -35,7 +59,9 @@ const deleteCustomProductFromCart = async (req, res) => {
 };
 
 const finalizeCheckout = async (req, res) => {
-    const { cart_id, customer_id, usePoints } = req.body;
+    const { cart_id } = req.body;
+    let usePoints = req.body.usePoints || false;
+    const customer_id = req.customer?.id;
     usePoints = false;
 
     try {

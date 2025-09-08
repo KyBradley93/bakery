@@ -6,6 +6,7 @@ const getCustomer = async (name, password) => {
         return res.rows;
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 
 };
@@ -16,6 +17,7 @@ const getCustomerName = async (name) => {
         return res.rows;
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 
 };
@@ -26,16 +28,18 @@ const getCustomerByGoogleId = async (google_id) => {
         return res.rows;
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 
 };
 
 const login = async (name, password) => {
     try {
-        const res = await pool.query('SELECT * FROM customers WHERE name = $1 AND password = $2', [name, password]);
-        return res.rows;
+        const res = await pool.query('SELECT * FROM customers WHERE name = $1', [name, password]);
+        return res.rows[0];
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 
 };
@@ -46,6 +50,7 @@ const register = async (name, password) => {
         return res.json();
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 };
 
@@ -55,6 +60,7 @@ const googleRegister = async (name, email, googleId) => {
         return res.json();
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
+        throw error;
     }
 };
 
