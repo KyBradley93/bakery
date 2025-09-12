@@ -533,14 +533,17 @@ describe('addProductToCart', () => {
 describe('addCustomProductToCart', () => {
     it('add product to customer cart',  async () => {
         //arrange 
-        const mockCartCustomProduct = {
-            cart_id: '1',
+        const mockCustomProductForm = {
+            product_type_id: '1',
+            custom_product_size_id: '2',
+            custom_product_base_id: '1', 
+            custom_product_variant_id: '2',
             custom_product_id: '7',
             quantity: '1'
         }
 
         const req = { 
-            body: { custom_product_id: 7, quantity: 1 },
+            body: { product_type_id: 1, custom_product_size_id: 2, custom_product_base_id: 1, custom_product_variant_id: 2, custom_product_id: 7, quantity: 1 },
             customer: { id: '123' }
         };
 
@@ -551,7 +554,7 @@ describe('addCustomProductToCart', () => {
         };
 
 
-        OrderModel.addCustomProductToCart.mockResolvedValueOnce(mockCartCustomProduct)
+        OrderModel.addCustomProductToCart.mockResolvedValueOnce(mockCustomProductForm)
 
         //act
         await OrderController.addCustomProductToCart(req, res);
@@ -559,7 +562,7 @@ describe('addCustomProductToCart', () => {
         //assert
         // heres the function you're mocking from your model. It's what the controller calls to get the user from the database.
 
-        expect(OrderModel.addCustomProductToCart).toHaveBeenCalledWith({ "customer_id": "123", "custom_product_id": 7, "quantity": 1 });
+        expect(OrderModel.addCustomProductToCart).toHaveBeenCalledWith({ "customer_id": "123", "product_type_id": 1, "custom_product_size_id": 2, "custom_product_base_id": 1, "custom_product_variant_id": 2, "custom_product_id": 7, "quantity": 1 });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ message: 'Added Item' });
     });
@@ -568,9 +571,8 @@ describe('addCustomProductToCart', () => {
         OrderModel.addCustomProductToCart.mockRejectedValue(new Error('DB error'));
 
         const req = { 
-            body: { custom_product_id: 1, quantity: 1 },
-            customer: { id: '123' },
-            quantity: '1'
+            body: { product_type_id: 1, custom_product_size_id: 2, custom_product_base_id: 1, custom_product_variant_id: 2, custom_product_id: 7, quantity: 1 },
+            customer: { id: '123' }
         };
 
         const res = {

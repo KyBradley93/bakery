@@ -9,10 +9,17 @@ const homeRoutes = require('./routes/homeRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const threadRoutes = require('./routes/threadRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const { postPayment } = require('./controllers/postPaymentController'); // 👈 webhook handler
 
 const app = express();
 
 app.use(cors());
+
+/** ✅ Stripe webhook route — MUST come before express.json() **/
+app.post('/api/webhook', express.raw({ type: 'application/json' }), postPayment);
+
+
 app.use(express.json());
 
 app.use('api/auth', authRoutes);
@@ -23,6 +30,7 @@ app.use('api/home', homeRoutes);
 app.use('api/order', orderRoutes);
 app.use('api/profile', profileRoutes);
 app.use('api/thread', threadRoutes);
+app.use('api/payment', paymentRoutes);
 
 
 app.get('/', (req, res) => {

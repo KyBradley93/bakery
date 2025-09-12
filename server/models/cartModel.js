@@ -1,8 +1,21 @@
 const pool = require('../db');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const getCart = async (customer_id) => {
     try {
         const res = await pool.query('SELECT * FROM cart WHERE customer_id = $1', [customer_id]);
+        return res.rows;
+    } catch (error) {
+        console.log(`Error in cartModel: ${error}`);
+    }
+};
+
+const getCartProducts = async (customer_id) => {
+    try {
+        const cart = await pool.query('SELECT * FROM cart WHERE customer_id = $1', [customer_id]);
+        cart_id = cart.rows[0].cart_id;
+
+        const res = await pool.query('SELECT * FROM cart_products WHERE cart_id = $1', [cart_id]);
         return res.rows;
     } catch (error) {
         console.log(`Error in cartModel: ${error}`);
@@ -186,7 +199,46 @@ const finalizeCheckout = async (cart_id, customer_id, usePoints = false) => {
     await client.query(clearCartQuery, [cart_id]);
 
     await client.query('COMMIT');
-    return checkout_id;
+
+    // --- STRIPE CHECKOUT SESSION LOGIC ---
+    // Build line_items for Stripe
+    const line_items = [
+      ...standardItems.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `Product #${item.product_id}` },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: item.quantity,
+      })),
+      ...customItems.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `Custom Product #${item.custom_product_id}` },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: item.quantity,
+      }))
+    ];
+
+    // Only create a session if total > 0
+    let session = null;
+    if (total > 0) {
+      session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        line_items,
+        success_url: `http://localhost:3000/success?id=${checkout_id}`,
+        cancel_url: 'http://localhost:3000/',
+        metadata: { checkout_id: checkout_id.toString() },
+      });
+    }
+
+    return {
+      checkout_id,
+      stripe_url: session?.url ?? null
+    };
+    
 
   } catch (err) {
     await client.query('ROLLBACK');
@@ -198,6 +250,7 @@ const finalizeCheckout = async (cart_id, customer_id, usePoints = false) => {
 
 module.exports = {
   getCart,
+  getCartProducts,
   deleteProductFromCart,
   deleteCustomProductFromCart,
   finalizeCheckout

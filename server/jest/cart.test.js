@@ -63,6 +63,62 @@ describe('getCart', () => {
 });
 
 
+describe('getCartProducts', () => {
+    it('should find customer cart products with customer_id',  async () => {
+        //arrange 
+        const mockCartProducts = { 
+            id: '1', 
+            cart_id : '123',
+            product_id: '22.22',
+            custom_product_id: null,
+            unit_price: '11/11/25',
+            quantity: '1'
+        };
+
+        const req = { 
+            customer: { id: '123' } 
+        };
+
+        // This is a mock of the res (response) object from Express. Leave alone?
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+
+        CartModel.getCartProducts.mockResolvedValue([mockCartProducts]);
+
+        //act
+        await CartController.getCartProducts(req, res);
+
+        //assert
+        // heres the function you're mocking from your model. It's what the controller calls to get the user from the database.
+
+        expect(CartModel.getCartProducts).toHaveBeenCalledWith('123');
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith([mockCartProducts]);
+    });
+
+    it('should return 500 on error', async () => {
+        CartModel.getCartProducts.mockRejectedValue(new Error('DB error'));
+
+        const req = { 
+            customer: { id: '123' } 
+        };
+
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+
+        await CartController.getCartProducts(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'cartController error' });
+  });
+
+});
+
+
 describe('deleteProductFromCart', () => {
     it('delete product from customer cart',  async () => {
         //arrange 

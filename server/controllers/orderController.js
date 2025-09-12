@@ -113,7 +113,7 @@ const addProductToCart = async (req, res) => {
 };
 
 const addCustomProductToCart = async (req, res) => {
-    const { custom_product_id, quantity } = req.body;
+    const { product_type_id, custom_product_size_id, custom_product_base_id, custom_product_variant_id, custom_product_id, quantity } = req.body;
 
     const customer_id = req.customer?.id;
 
@@ -126,7 +126,7 @@ const addCustomProductToCart = async (req, res) => {
     }
 
     try {
-        await OrderModel.addCustomProductToCart({ customer_id, custom_product_id, quantity });
+        await OrderModel.addCustomProductToCart({ customer_id, product_type_id, custom_product_size_id, custom_product_base_id, custom_product_variant_id, custom_product_id, quantity });
         res.status(200).json({ message: 'Added Item' });
     } catch (err) {
         console.error('error in orderController', err);

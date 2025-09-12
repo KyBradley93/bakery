@@ -1,3 +1,4 @@
+
 const pool = require('../db');
 
 const getProducts = async () => {
@@ -106,7 +107,7 @@ const addProductToCart = async (customer_id, product_id, quantity) => {
     }
 };
 
-const addCustomProductToCart = async (customer_id, custom_product_id, quantity) => {
+const addCustomProductToCart = async (customer_id, product_type_id, custom_product_size_id, custom_product_base_id, custom_product_variant_id, custom_product_id, quantity) => {
     try {
         // Ensure users cart exists
         let cartResult = await pool.query('SELECT * FROM cart WHERE customer_id = $1', [customer_id]);
@@ -119,6 +120,10 @@ const addCustomProductToCart = async (customer_id, custom_product_id, quantity) 
         } else {
             cart_id = cartResult.rows[0].id;
         }
+
+        const newCustomProduct = await pool.query('INSERT INTO custom_products (product_type_id, custom_product_size_id, custom_product_base_id, custom_product_variant_id) VALUES ($1, $2, $3, $4) RETURNING id', [product_type_id, custom_product_size_id, custom_product_base_id, custom_product_variant_id]);
+
+        custom_product_id = newCustomProduct.rows[0].id;
 
         await pool.query(
             'INSERT INTO cart_products (cart_id, custom_product_id, quantity) VALUES ($1, $2, $3)',

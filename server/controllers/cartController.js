@@ -16,6 +16,22 @@ const getCart = async (req, res) => {
     }
 };
 
+const getCartProducts = async (req, res) => {
+    try {
+        const customer_id = req.customer?.id;
+
+        if (!customer_id) {
+            return res.status(400).json({ message: 'Missing customer ID' });
+        }
+
+        const cartProducts = await CartModel.getCartProducts(customer_id)
+        res.status(200).json(cartProducts);
+    } catch (err) {
+        console.error('error in cartController', err);
+        res.status(500).json({ message: 'cartController error'});
+    }
+};
+
 const deleteProductFromCart = async (req, res) => {
     const { product_id } = req.body;
     const customer_id = req.customer?.id;
@@ -75,6 +91,7 @@ const finalizeCheckout = async (req, res) => {
 
 module.exports = {
   getCart,
+  getCartProducts,
   deleteProductFromCart,
   deleteCustomProductFromCart,
   finalizeCheckout
