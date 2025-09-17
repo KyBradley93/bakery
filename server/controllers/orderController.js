@@ -11,9 +11,20 @@ const getProducts = async (req, res) => {
 };
 
 const getProductsByType = async (req, res) => {
+    console.log('Raw req.body:', req.body);
+    console.log('Type of req.body:', typeof req.body);
+
     const { product_type_id } = req.body;
+
+    console.log('Extracted product_type_id:', product_type_id);
+    
     try {
-        const products = await OrderModel.getProductsByType({ product_type_id });
+        const products = await OrderModel.getProductsByType( product_type_id );
+
+        if (!products) {
+            return res.status(404).json({ message: 'No products found for this type' });
+        }
+
         res.status(200).json(products);
     } catch (err) {
         console.error('error in orderController', err);

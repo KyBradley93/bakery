@@ -6,6 +6,7 @@ const getContest = async () => {
         return res.rows;
     } catch (error) {
         console.log(`Error in homeModel: ${error}`);
+        throw error;
     }
 };
 
@@ -14,7 +15,8 @@ const getPhotos = async () => {
         const res = await pool.query('SELECT * FROM photos');
         return res.rows;
     } catch (error) {
-        console.log(`Error in homeModel: ${error}`);
+        console.log(`Error in homeModel.getPhotos: ${error}`);
+        throw error;
     }
 };
 
@@ -24,6 +26,7 @@ const getThreads = async () => {
         return res.rows;
     } catch (error) {
         console.log(`Error in homeModel: ${error}`);
+        throw error;
     }
 }
 

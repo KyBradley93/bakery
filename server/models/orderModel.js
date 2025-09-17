@@ -100,6 +100,11 @@ const addProductToCart = async (customer_id, product_id, quantity) => {
             'INSERT INTO cart_products (cart_id, product_id, quantity) VALUES ($1, $2, $3)',
             [cart_id, product_id, quantity]
         );
+
+        await pool.query(
+            'UPDATE products SET quantity = quantity - 1 WHERE id = ($1)',
+            [product_id]
+        );
         
         return res.json();
     } catch (error) {

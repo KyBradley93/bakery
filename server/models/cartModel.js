@@ -1,5 +1,5 @@
 const pool = require('../db');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+//const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const getCart = async (customer_id) => {
     try {
@@ -90,6 +90,7 @@ const getCustomerPointsAsCurrency = async (customer_id) => {
     client.release();
   }
 };
+
 
 const finalizeCheckout = async (cart_id, customer_id, usePoints = false) => {
   const client = await pool.connect(); // Use a dedicated client for transaction
@@ -202,41 +203,41 @@ const finalizeCheckout = async (cart_id, customer_id, usePoints = false) => {
 
     // --- STRIPE CHECKOUT SESSION LOGIC ---
     // Build line_items for Stripe
-    const line_items = [
-      ...standardItems.map(item => ({
-        price_data: {
-          currency: 'usd',
-          product_data: { name: `Product #${item.product_id}` },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      })),
-      ...customItems.map(item => ({
-        price_data: {
-          currency: 'usd',
-          product_data: { name: `Custom Product #${item.custom_product_id}` },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      }))
-    ];
+    //const line_items = [
+    //  ...standardItems.map(item => ({
+    //    price_data: {
+    //      currency: 'usd',
+    //      product_data: { name: `Product #${item.product_id}` },
+    //      unit_amount: Math.round(item.price * 100),
+    //    },
+    //    quantity: item.quantity,
+    //  })),
+    //  ...customItems.map(item => ({
+    //    price_data: {
+    //      currency: 'usd',
+    //      product_data: { name: `Custom Product #${item.custom_product_id}` },
+    //      unit_amount: Math.round(item.price * 100),
+    //    },
+    //    quantity: item.quantity,
+    //  }))
+    //];
 
     // Only create a session if total > 0
-    let session = null;
-    if (total > 0) {
-      session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        mode: 'payment',
-        line_items,
-        success_url: `http://localhost:3000/success?id=${checkout_id}`,
-        cancel_url: 'http://localhost:3000/',
-        metadata: { checkout_id: checkout_id.toString() },
-      });
-    }
+    //let session = null;
+    //if (total > 0) {
+    //  session = await stripe.checkout.sessions.create({
+    //    payment_method_types: ['card'],
+    //    mode: 'payment',
+    //    line_items,
+    //    success_url: `http://localhost:3000/success?id=${checkout_id}`,
+    //    cancel_url: 'http://localhost:3000/',
+     //   metadata: { checkout_id: checkout_id.toString() },
+     // });
+    //}
 
     return {
       checkout_id,
-      stripe_url: session?.url ?? null
+      stripe_url: null
     };
     
 
@@ -247,6 +248,7 @@ const finalizeCheckout = async (cart_id, customer_id, usePoints = false) => {
     client.release();
   }
 };
+
 
 module.exports = {
   getCart,

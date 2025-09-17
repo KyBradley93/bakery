@@ -11,6 +11,16 @@ const getCustomer = async (name, password) => {
 
 };
 
+const getCustomerByName = async (name) => {
+    try {
+        const res = await pool.query('SELECT * FROM customers WHERE name = $1', [name]);
+        return res.rows[0];
+    } catch (error) {
+        console.log(`Error in authModel: ${error}`);
+        throw error;
+    }
+};
+
 const getCustomerName = async (name) => {
     try {
         const res = await pool.query('SELECT * FROM customers WHERE name = $1', [name]);
@@ -35,7 +45,7 @@ const getCustomerByGoogleId = async (google_id) => {
 
 const login = async (name, password) => {
     try {
-        const res = await pool.query('SELECT * FROM customers WHERE name = $1', [name, password]);
+        const res = await pool.query('SELECT * FROM customers WHERE name = $1', [name]);
         return res.rows[0];
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
@@ -46,8 +56,8 @@ const login = async (name, password) => {
 
 const register = async (name, password) => {
     try {
-        const res = await pool.query('INSERT INTO customers (name, password) VALUES ($1, $2)', [name, password]);
-        return res.json();
+        await pool.query('INSERT INTO customers (name, password) VALUES ($1, $2)', [name, password]);
+        return;
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
         throw error;
@@ -56,8 +66,8 @@ const register = async (name, password) => {
 
 const googleRegister = async (name, email, googleId) => {
     try {
-        const res = await pool.query('INSERT INTO customers (name, email, google_id) VALUES ($1, $2)', [name, email, googleId]);
-        return res.json();
+        await pool.query('INSERT INTO customers (name, email, google_id) VALUES ($1, $2, $3)', [name, email, googleId]);
+        return;
     } catch (error) {
         console.log(`Error in authModel: ${error}`);
         throw error;
@@ -65,6 +75,7 @@ const googleRegister = async (name, email, googleId) => {
 };
 
 module.exports = {
+    getCustomerByName,
     getCustomer,
     getCustomerName,
     login,

@@ -3,7 +3,7 @@ const router = express.Router();
 const OrderController = require('../controllers/orderController');
 
 router.get('/products', OrderController.getProducts);
-router.get('/products-by-type', OrderController.getProductsByType);
+router.post('/products-by-type', OrderController.getProductsByType);
 router.get('/product-types', OrderController.getProductTypes);
 router.get('/custom-product-sizes', OrderController.getCustomProductSizes);
 router.get('/custom-product-bases', OrderController.getCustomProductBases);

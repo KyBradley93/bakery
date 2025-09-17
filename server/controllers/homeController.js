@@ -21,7 +21,7 @@ const getPhotos = async (req, res) => {
     res.status(200).json(photos);
  } catch (err) {
     console.error('error in homeController', err);
-    res.status(500).json({ message: 'homeController error'});
+    res.status(500).json({ message: 'Internal server error: getPhotos'});
  }
 };
 
